@@ -2,6 +2,11 @@ import sqlite3
 from datetime import date
 from enum import Enum, auto
 
+def main():
+    print('\n')
+    
+
+
 class Frequency(Enum):
     DAILY = 'Daily'
     WEEKLY = 'Weekly'
@@ -33,4 +38,13 @@ def get_habits():
 
 def add_habit(name: str, target: int, unit: str, frequency: Frequency):
     connection = get_connectiondb()
-    habits_cursor = connection.execute
+    connection.execute('INSERT INTO Habits (name, target, unit, frequency) VALUES (?, ?, ?, ?)', 
+                       (name, target, unit, frequency))
+    connection.commit()
+    connection.close()
+
+def delete_habit(id: int):
+    connection = get_connectiondb()
+    connection.execute('DELETE FROM Habits WHERE id = ?', (id,))
+    connection.commit()
+    connection.close()

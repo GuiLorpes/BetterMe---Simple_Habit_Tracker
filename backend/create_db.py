@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS Logs (
                habit_id INTEGER NOT NULL,
                amount INTEGER NOT NULL,
                date TEXT,
-               FOREIGN KEY (habit_id) REFERENCES Habits.id
+               FOREIGN KEY (habit_id) REFERENCES Habits(id))
                ''')
 
 print("Database and 'Habits' and 'Logs' tables have been created!")
