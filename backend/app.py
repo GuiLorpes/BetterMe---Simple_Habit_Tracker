@@ -4,8 +4,8 @@ from enum import Enum, auto
 
 def main():
     choice = 0
-    while choice != 4:
-        print('\n1 -> Adicionar Hábito\n2 -> Remover Hábito\n3 -> Verificar Hábitos\n4 -> Sair')
+    while choice < 5:
+        print('\n1 -> Adicionar Hábito\n2 -> Atualizar o Hábito\n3 -> Remover Hábito\n4 -> Verificar Hábitos\n5 -> Sair')
         choice = int(input('Escolha qual ação você deseja realizar:\n'))
         if choice == 1:
             habit_type = str(input('Are you trying to build a good habit, or break a bad one? (Build/Break)\n'))
@@ -18,8 +18,17 @@ def main():
             frequency = str(input("What's the frequency of your habit? (Daily/Weekly)\n"))
             add_habit(habit, goal, habit_type, unit, frequency)
         if choice == 2:
-            habit = str()
+            select_habits()
+            get_habits()
+            habit_id = int(input('Which habit you want to update?\n'))
+            ammount = int(input('What was your progress?\n'))
+            log_habit(habit_id, ammount)
         if choice == 3:
+            select_habits()
+            get_habits()
+            id = int(input('Which habit you want to delete?\n'))
+            delete_habit(id)
+        if choice == 4:
             get_habits()
         
 
@@ -48,14 +57,18 @@ def get_connectiondb():
     connection.row_factory = sqlite3.Row
     return connection
 
-def get_habits():
+def select_habits() -> dict:
     connection = get_connectiondb()
     habits_cursor = connection.execute('SELECT id, habit, goal, habit_type, unit, frequency FROM Habits')
     habits = [dict(row) for row in habits_cursor]
     if not habits:
         print("\nYou still don't have any habits:\n---------------")
+    return habits
+
+def get_habits():
+    select_habits()
     print('\nYour habits:\n---------------')
-    for h in habits:
+    for h in select_habits():
         hid = h['id']
         habit = h['habit']
         habit_type = h['habit_type']
@@ -85,6 +98,13 @@ def add_habit(name: str, goal: int, habit_type: int,unit: str, frequency: Freque
 def delete_habit(id: int):
     connection = get_connectiondb()
     connection.execute('DELETE FROM Habits WHERE id = ?', (id,))
+    connection.commit()
+    connection.close()
+
+def log_habit(habit_id: int, amount: int):
+    connection = get_connectiondb()
+    connection.execute('INSERT INTO Logs (habit_id, amount, date) VALUES (?, ?, ?)', \
+                       (habit_id, amount, str(date.today())))
     connection.commit()
     connection.close()
 
