@@ -66,7 +66,11 @@ def select_habits() -> dict:
     return habits
 
 def get_habits():
-    select_habits()
+    connection = get_connectiondb()
+    habits_cursor = connection.execute('SELECT id, habit, goal, habit_type, unit, frequency FROM Habits')
+    habits = [dict(row) for row in habits_cursor]
+    if not habits:
+        print("\nYou still don't have any habits:\n---------------")
     print('\nYour habits:\n---------------')
     for h in select_habits():
         hid = h['id']
