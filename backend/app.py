@@ -63,6 +63,8 @@ def select_habits() -> dict:
     habits = [dict(row) for row in habits_cursor]
     if not habits:
         print("\nYou still don't have any habits:\n---------------")
+    connection.commit()
+    connection.close()
     return habits
 
 def get_habits():
