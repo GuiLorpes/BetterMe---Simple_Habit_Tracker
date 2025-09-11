@@ -18,13 +18,17 @@ def main():
             frequency = str(input("What's the frequency of your habit? (Daily/Weekly)\n"))
             add_habit(habit, goal, habit_type, unit, frequency)
         if choice == 2:
-            select_habits()
+            p = select_habits()
+            if not p:
+                raise ValueError('No habits to update')
             get_habits()
             habit_id = int(input('Which habit you want to update?\n'))
             ammount = int(input('What was your progress?\n'))
             log_habit(habit_id, ammount)
         if choice == 3:
-            select_habits()
+            p = select_habits()
+            if not p:
+                raise ValueError('No habits to delete')
             get_habits()
             id = int(input('Which habit you want to delete?\n'))
             delete_habit(id)
@@ -73,8 +77,9 @@ def get_habits():
     habits = [dict(row) for row in habits_cursor]
     if not habits:
         print("\nYou still don't have any habits:\n---------------")
-    print('\nYour habits:\n---------------')
-    for h in select_habits():
+    else:
+        print('\nYour habits:\n---------------')
+    for h in habits:
         hid = h['id']
         habit = h['habit']
         habit_type = h['habit_type']
